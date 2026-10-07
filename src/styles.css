@@ -1,0 +1,179 @@
+@import "tailwindcss";
+@import "@fontsource-variable/bricolage-grotesque/opsz.css";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+/*
+ * Tokens adapted from Framer's DESIGN.md (VoltAgent/awesome-design-md):
+ * near-black canvas, white display type with tight tracking, white pill CTAs,
+ * a single blue for links/selection, and vivid gradient "atmosphere" panels.
+ * GT Walsheim (proprietary) is swapped for Bricolage Grotesque; Inter for Geist.
+ *
+ * Shape rule: interactive = full pill, cards = 20px, double-bezel shells = 28px
+ * (20 + 8px padding, concentric), form fields = 12px.
+ */
+@theme {
+  --color-canvas: #090909;
+  --color-surface-1: #141414;
+  --color-surface-2: #1c1c1c;
+  --color-hairline: #262626;
+  --color-ink: #fafafa;
+  --color-ink-muted: #a3a3a3;
+  --color-ink-faint: #808080;
+  --color-accent: #0099ff;
+  --color-magenta: #d44df0;
+  --color-violet: #6a4cf5;
+  --color-orange: #ff7a3d;
+  --color-coral: #ff5577;
+  --color-success: #22c55e;
+
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  --text-display-xl: clamp(3rem, 7.4vw, 6.75rem);
+  --text-display-xl--line-height: 0.94;
+  --text-display-xl--letter-spacing: -0.045em;
+  --text-display-xl--font-weight: 600;
+  --text-display-lg: clamp(2.5rem, 5.2vw, 4.5rem);
+  --text-display-lg--line-height: 0.98;
+  --text-display-lg--letter-spacing: -0.04em;
+  --text-display-lg--font-weight: 600;
+  --text-display-md: clamp(1.625rem, 2.6vw, 2.25rem);
+  --text-display-md--line-height: 1.1;
+  --text-display-md--letter-spacing: -0.03em;
+  --text-display-md--font-weight: 600;
+
+  --radius-field: 12px;
+  --radius-card: 20px;
+  --radius-shell: 28px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --animate-marquee-up: marquee-up 48s linear infinite;
+  --animate-marquee-down: marquee-down 56s linear infinite;
+  --animate-drift-a: drift-a 18s ease-in-out infinite alternate;
+  --animate-drift-b: drift-b 22s ease-in-out infinite alternate;
+  --animate-drift-c: drift-c 26s ease-in-out infinite alternate;
+  --animate-spin-slow: spin 9s linear infinite;
+}
+
+@keyframes marquee-up { to { transform: translateY(-50%); } }
+@keyframes marquee-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+@keyframes word-in { from { opacity: 0; transform: translateY(70%); filter: blur(10px); } }
+@keyframes frame-in { from { opacity: 0; transform: translateY(40px) rotate(2deg); } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } }
+@keyframes drift-a { to { transform: translate3d(18%, 12%, 0) scale(1.15); } }
+@keyframes drift-b { to { transform: translate3d(-16%, 10%, 0) scale(0.9); } }
+@keyframes drift-c { to { transform: translate3d(10%, -14%, 0) scale(1.2); } }
+
+/* Animatable tone colors: sections set these and gradients cross-fade. */
+@property --tone-a { syntax: "<color>"; inherits: true; initial-value: #ff5577; }
+@property --tone-b { syntax: "<color>"; inherits: true; initial-value: #d44df0; }
+@property --tone-c { syntax: "<color>"; inherits: true; initial-value: #6a4cf5; }
+
+.tone-coral { --tone-a: var(--color-coral); --tone-b: var(--color-orange); --tone-c: var(--color-magenta); }
+.tone-magenta { --tone-a: var(--color-magenta); --tone-b: var(--color-coral); --tone-c: var(--color-violet); }
+.tone-violet { --tone-a: var(--color-violet); --tone-b: var(--color-magenta); --tone-c: var(--color-accent); }
+.tone-orange { --tone-a: var(--color-orange); --tone-b: var(--color-coral); --tone-c: var(--color-magenta); }
+.tone-blue { --tone-a: var(--color-accent); --tone-b: var(--color-violet); --tone-c: var(--color-magenta); }
+
+@layer base {
+  html {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01";
+    min-height: 100dvh;
+    overflow-x: clip;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: color-mix(in oklab, var(--color-accent) 55%, transparent); color: #fff; }
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  [id] { scroll-margin-top: 6rem; }
+}
+
+@layer components {
+  /* Living gradient panel: three soft blobs drifting on transform only. */
+  .atmosphere {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--color-surface-1);
+    transition: --tone-a 1.4s var(--ease-out-expo), --tone-b 1.4s var(--ease-out-expo), --tone-c 1.4s var(--ease-out-expo);
+  }
+  .atmosphere > .blob {
+    position: absolute;
+    z-index: -1;
+    width: 75%;
+    aspect-ratio: 1;
+    border-radius: 9999px;
+    pointer-events: none;
+    will-change: transform;
+  }
+  .blob-a { top: -30%; left: -20%; background: radial-gradient(closest-side, var(--tone-a), transparent); animation: var(--animate-drift-a); }
+  .blob-b { bottom: -35%; right: -15%; background: radial-gradient(closest-side, var(--tone-b), transparent); animation: var(--animate-drift-b); }
+  .blob-c { top: 10%; right: 5%; width: 55%; opacity: 0.8; background: radial-gradient(closest-side, var(--tone-c), transparent); animation: var(--animate-drift-c); }
+
+  /* Fade the edges of scrolling lanes. */
+  .fade-y { mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent); }
+  .fade-x { mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent); }
+
+  /* Cursor-tracked spotlight border (vars set from pointermove, no React state). */
+  .spotlight { --x: 50%; --y: 50%; }
+  .spotlight::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(420px circle at var(--x) var(--y), rgb(255 255 255 / 0.55), transparent 45%);
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-expo);
+    pointer-events: none;
+  }
+  .spotlight:hover::after, .spotlight:focus-within::after { opacity: 1; }
+
+  .img-outline { outline: 1px solid oklch(1 0 0 / 0.1); outline-offset: -1px; }
+}
+
+/* Film grain on a fixed layer only, never on scrolling content. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Route changes: the old page lifts away, the new one rises in. Nav stays put. */
+::view-transition-old(root) { animation: 0.35s var(--ease-out-expo) both vt-out; }
+::view-transition-new(root) { animation: 0.6s var(--ease-out-expo) both vt-in; }
+.site-nav { view-transition-name: site-nav; }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-12px); filter: blur(6px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(24px); filter: blur(8px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
