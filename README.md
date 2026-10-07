@@ -16,7 +16,11 @@ bun run test:e2e           # with dev running; writes test rows to local D1 only
 ## Edit content
 
 All copy, activities, audiences, prompts and tools live in `src/content.ts`.
-Photos are in `public/images/<name>-800.webp` and `-1600.webp` (Unsplash license).
+Photos are in `public/images/<name>-800.webp` and `-1600.webp`, cropped to 4:3 ([Pexels license](https://www.pexels.com/license/)).
+Source photo IDs (`https://www.pexels.com/photo/<id>/`): students 34162714, professionals 30678211, beginners 30677594,
+teams 30688592, workshops 9433169, meetups 30688593, bootcamps 19805876, online 6193633, team-training 1367272,
+crowd 9287491, skill-chat 6969796, skill-book 6457510, skill-pen 3884406, skill-table 6744352, skill-image 7594319,
+skill-flow 20209020, skill-shield 4353614. To swap one, replace both sizes under the same name.
 
 ## Sessions and sign-ups (D1: `aiskilling-db`)
 

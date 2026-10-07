@@ -231,16 +231,25 @@ export function Skills() {
           {skills.map((s, i) => {
             const Icon = skillIcons[s.icon]
             return (
-              <li key={s.title} className={`tone-${skillTones[i]} shrink-0 snap-start`}>
-                <div className="h-[22rem] w-[min(78vw,22rem)] rounded-shell bg-white/[0.03] p-2 ring-1 ring-white/[0.08] md:h-[25rem] md:w-[24rem]">
-                  <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-card bg-surface-1 p-7 shadow-[inset_0_1px_1px_rgb(255_255_255/0.08)]">
-                    <div
-                      aria-hidden
-                      className="absolute -top-24 -right-24 size-64 rounded-full opacity-40"
-                      style={{ background: 'radial-gradient(closest-side, var(--tone-a), transparent)' }}
-                    />
+              <li key={s.title} className={`tone-${skillTones[i]} group shrink-0 snap-start`}>
+                <div className="h-[24rem] w-[min(78vw,22rem)] rounded-shell bg-white/[0.03] p-2 ring-1 ring-white/[0.08] md:h-[27rem] md:w-[24rem]">
+                  <div className="relative isolate flex h-full flex-col justify-between overflow-hidden rounded-card bg-surface-1 p-7 shadow-[inset_0_1px_1px_rgb(255_255_255/0.08)]">
+                    <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-3/5 overflow-hidden">
+                      <img
+                        {...photo(`skill-${s.icon}`)}
+                        sizes="(min-width: 768px) 24rem, 78vw"
+                        alt=""
+                        loading="lazy"
+                        className="size-full object-cover transition-transform duration-1000 ease-out-expo group-hover:scale-105"
+                      />
+                      <div
+                        className="absolute inset-0 opacity-30 mix-blend-color"
+                        style={{ background: 'linear-gradient(to top, var(--tone-a), transparent 80%)' }}
+                      />
+                      <div className="absolute inset-0 bg-linear-to-b from-surface-1/10 via-surface-1/30 to-surface-1" />
+                    </div>
                     <span
-                      className="relative grid size-14 place-items-center rounded-2xl text-canvas"
+                      className="relative grid size-14 place-items-center rounded-2xl text-canvas shadow-[0_8px_24px_-6px_rgb(0_0_0/0.5)]"
                       style={{ background: 'linear-gradient(135deg, var(--tone-a), var(--tone-b))' }}
                     >
                       <Icon size={26} weight="duotone" />

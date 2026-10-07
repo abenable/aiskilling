@@ -1,5 +1,5 @@
 // All site copy lives here. Edit this file to change what the site says.
-// Photos: Unsplash (unsplash.com/license), self-hosted in /public/images.
+// Photos: Pexels (pexels.com/license), self-hosted in /public/images. Sources are listed in the README.
 
 export const site = {
   name: 'AI Skilling',
