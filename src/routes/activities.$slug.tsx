@@ -16,7 +16,7 @@ export const Route = createFileRoute('/activities/$slug')({
   },
   head: ({ loaderData }) =>
     loaderData
-      ? seo({ title: loaderData.activity.name, description: loaderData.activity.summary, path: `/activities/${loaderData.activity.slug}` })
+      ? seo({ title: `AI ${loaderData.activity.short.toLowerCase()}`, description: loaderData.activity.summary, path: `/activities/${loaderData.activity.slug}` })
       : {},
   component: ActivityPage,
 })

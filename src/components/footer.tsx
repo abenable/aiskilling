@@ -15,7 +15,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-12 px-5 md:grid-cols-[2fr_1fr_1fr] md:px-8">
         <div>
           <Logo />
-          <p className="mt-5 max-w-xs text-ink-muted">Hands-on sessions that help anyone put AI to work, whatever their starting point.</p>
+          <p className="mt-5 max-w-xs text-ink-muted">Hands-on AI sessions in Kampala and across Africa for students, professionals, startups and teams.</p>
         </div>
         <div>
           <h2 className="font-sans text-sm text-ink-faint">Explore</h2>

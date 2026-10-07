@@ -64,7 +64,7 @@ export function Hero() {
             </span>
           </h1>
           <p className="mt-7 max-w-[34rem] text-lg leading-relaxed text-ink-muted animate-[fade-up_1s_var(--ease-out-expo)_0.6s_both] md:text-xl">
-            Hands-on workshops, meetups and bootcamps that turn AI curiosity into skills you use every day.
+            Hands-on workshops, meetups and bootcamps in Kampala and across Africa that turn AI curiosity into skills you use every day.
           </p>
           <div className="mt-10 flex flex-wrap gap-3 animate-[fade-up_1s_var(--ease-out-expo)_0.75s_both]">
             <Cta to="/join">Join the community</Cta>

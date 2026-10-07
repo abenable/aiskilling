@@ -6,7 +6,7 @@ export const site = {
   url: 'https://aiskilling.dev',
   email: 'ableabenaitwe@gmail.com',
   description:
-    'Hands-on AI workshops, meetups, bootcamps and online sessions for students, professionals, beginners and teams.',
+    'Hands-on AI workshops, meetups and bootcamps in Kampala and across Africa, for students, professionals, startups, teams and complete beginners.',
 }
 
 export type Tone = 'coral' | 'magenta' | 'violet' | 'orange' | 'blue'
@@ -46,9 +46,9 @@ export const audiences = [
   {
     slug: 'teams',
     label: 'Teams',
-    name: 'Businesses & teams',
+    name: 'Startups & businesses',
     word: 'business',
-    line: 'Train your people together on tools and habits that fit how your business already works.',
+    line: 'From early-stage startups to established firms, train your people together on tools and habits that fit how you already work.',
     tone: 'magenta',
   },
 ] as const satisfies ReadonlyArray<{ tone: Tone } & Record<string, string>>
@@ -114,7 +114,7 @@ export const activities = [
     short: 'Online sessions',
     tagline: 'Join from anywhere, follow on your own screen.',
     summary:
-      'Live walkthroughs you can follow step by step from your laptop, with time for questions at the end. Good for busy schedules and for anyone outside the city.',
+      'Live walkthroughs you can follow step by step from your laptop, with time for questions at the end. Good for busy schedules and for anyone outside Kampala.',
     happens: [
       'A live, step-by-step walkthrough',
       'Follow along on your own screen as we go',
@@ -131,7 +131,7 @@ export const activities = [
     short: 'Team training',
     tagline: 'Built around your tools, data rules and daily work.',
     summary:
-      'Sessions designed with your team in mind. We start from the work your people already do and show where AI saves time, and where it should stay out.',
+      'Sessions designed with your team in mind, from early-stage startups to established businesses. We start from the work your people already do and show where AI saves time, and where it should stay out.',
     happens: [
       'A short conversation to understand your team’s work',
       'Sessions built on your real tasks and examples',
@@ -167,7 +167,7 @@ export const prompts = [
   { who: 'Freelancer', text: 'Write a polite follow-up to a client whose invoice is two weeks late.' },
   { who: 'Analyst', text: 'Find the three biggest changes in last quarter’s sales and chart them.' },
   { who: 'Parent', text: 'Plan a week of healthy family dinners on a tight budget.' },
-  { who: 'Founder', text: 'Turn these customer interviews into the top five problems to solve.' },
+  { who: 'Startup founder', text: 'Turn these customer interviews into the top five problems to solve.' },
   { who: 'Student', text: 'Quiz me on photosynthesis until I get ten answers right in a row.' },
 ]
 

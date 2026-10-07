@@ -12,8 +12,11 @@ const securityHeaders = {
 export default createServerEntry({
   async fetch(request) {
     const url = new URL(request.url)
-    if (url.hostname.startsWith('www.')) {
-      url.hostname = url.hostname.slice(4)
+    // One canonical URL per page: apex host, no trailing slash (permanent, so search engines merge them).
+    const path = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, '') || '/' : url.pathname
+    if (url.hostname.startsWith('www.') || path !== url.pathname) {
+      url.hostname = url.hostname.replace(/^www\./, '')
+      url.pathname = path
       return Response.redirect(url.toString(), 301)
     }
     const res = await handler.fetch(request)
