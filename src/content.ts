@@ -156,6 +156,26 @@ export type Activity = (typeof activities)[number]
 export type ActivitySlug = Activity['slug']
 export const activitySlugs = activities.map((a) => a.slug) as [ActivitySlug, ...ActivitySlug[]]
 
+/** Home page pricing. Teams get a quote, so their card lists what team training covers instead of a price. */
+export const pricing = {
+  individual: {
+    currency: 'UGX',
+    amount: '250,000',
+    unit: 'per person, per month',
+    line: 'For students, professionals and anyone learning on their own.',
+    includes: [
+      'Every workshop and online session that month',
+      'Hands-on practice with real AI tools',
+      'Your own tasks, not made-up exercises',
+      'Help from a facilitator when you get stuck',
+    ],
+  },
+  teams: {
+    line: 'For startups and businesses training their people together.',
+    emailSubject: 'Team training enquiry',
+  },
+}
+
 /** Real photos from our last bootcamp, shown on the home page. */
 export const bootcamp = {
   when: 'August 2026',

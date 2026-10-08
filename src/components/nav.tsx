@@ -7,6 +7,7 @@ import { Cta, easeOutExpo } from './motion'
 const links = [
   { label: 'Activities', to: '/activities' },
   { label: 'How it works', to: '/', hash: 'how' },
+  { label: 'Pricing', to: '/', hash: 'pricing' },
   { label: 'Upcoming', to: '/', hash: 'upcoming' },
 ] as const
 

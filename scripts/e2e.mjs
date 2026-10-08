@@ -1,6 +1,7 @@
 // End-to-end smoke test against the local dev server (writes test rows to LOCAL D1 only).
 // Usage: bun run dev  (in another terminal), then: bun run test:e2e
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { chromium } from 'playwright-core'
 
 const base = process.argv[2] ?? 'http://localhost:3000'
@@ -52,6 +53,26 @@ for (let i = 0; i < 8 && !limited; i++) {
   limited = await page.getByText('Too many attempts').isVisible()
 }
 assert.ok(limited, 'rate limiter kicks in')
+
+// Private admin: password-gated (page, JSON and CSV), sortable, exports CSV.
+const password = readFileSync('.dev.vars', 'utf8').match(/^ADMIN_PASSWORD=(.*)$/m)?.[1]
+assert.ok(password, 'ADMIN_PASSWORD is set in .dev.vars')
+for (const path of ['/admin', '/admin/api/signups', '/admin/signups.csv', '/ADMIN/api/signups']) {
+  assert.equal((await fetch(base + path)).status, 401, `${path} needs the password`)
+}
+const admin = await browser.newContext({ httpCredentials: { username: 'admin', password } })
+const ap = await admin.newPage()
+ap.on('pageerror', (e) => errors.push(e.message))
+await ap.goto(`${base}/admin`, { waitUntil: 'networkidle' })
+await ap.getByRole('cell', { name: 'E2E Tester' }).first().waitFor()
+await ap.getByRole('link', { name: 'Name' }).click()
+await ap.waitForURL(/sort=name&dir=asc/)
+await ap.waitForTimeout(800)
+const names = await ap.locator('tbody tr td:first-child').allTextContents()
+assert.deepEqual(names, [...names].sort((x, y) => x.localeCompare(y, 'en', { sensitivity: 'base' })), 'sorted by name A to Z')
+const csv = await (await ap.request.get(`${base}/admin/signups.csv`)).text()
+assert.ok(csv.startsWith('\uFEFF"Name","Email","Group"'), 'CSV has a header row')
+await admin.close()
 assert.deepEqual(errors, [], 'no uncaught page errors')
 
 await browser.close()

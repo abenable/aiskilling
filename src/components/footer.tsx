@@ -22,6 +22,7 @@ export function Footer() {
           <ul className="mt-4 space-y-2.5">
             <li><Link to="/activities" className="transition-colors hover:text-accent">Activities</Link></li>
             <li><Link to="/" hash="how" className="transition-colors hover:text-accent">How it works</Link></li>
+            <li><Link to="/" hash="pricing" className="transition-colors hover:text-accent">Pricing</Link></li>
             <li><Link to="/" hash="upcoming" className="transition-colors hover:text-accent">Upcoming sessions</Link></li>
             <li><Link to="/join" className="transition-colors hover:text-accent">Join the community</Link></li>
           </ul>

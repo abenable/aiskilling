@@ -3,6 +3,7 @@ import '@tanstack/react-start/server-only'
 import { env } from 'cloudflare:workers'
 import type { ActivitySlug } from '#/content'
 import type { EventItem, JoinInput } from '#/lib/schemas'
+import type { AdminSearch, Signup, SignupSort } from '#/lib/signups'
 
 export async function upcomingEvents(kind?: ActivitySlug, limit = 6): Promise<EventItem[]> {
   try {
@@ -33,6 +34,18 @@ export async function saveSignup(s: JoinInput) {
   )
     .bind(s.name, s.email, s.audience, s.interests.join(','), s.message || null)
     .run()
+}
+
+// Whitelisted ORDER BY clauses: the sort key is validated, never interpolated from raw input.
+const signupOrder: Record<SignupSort, string> = { joined: 'created_at', name: 'name COLLATE NOCASE', email: 'email', group: 'audience' }
+
+export async function listSignups({ sort, dir }: AdminSearch): Promise<Signup[]> {
+  const { results } = await env.DB.prepare(
+    `SELECT id, name, email, audience, interests, message, created_at AS createdAt, updated_at AS updatedAt
+       FROM signups
+      ORDER BY ${signupOrder[sort]} ${dir === 'asc' ? 'ASC' : 'DESC'}, id DESC`,
+  ).all<Signup>()
+  return results
 }
 
 export async function allowJoin(ip: string) {

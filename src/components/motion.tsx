@@ -81,7 +81,8 @@ const ctaIcon = {
   ghost: 'bg-white/10 text-ink',
 }
 
-function CtaAnchor({
+/** The CTA look as a plain anchor, for external and mailto links. */
+export function CtaAnchor({
   variant = 'primary',
   className = '',
   children,

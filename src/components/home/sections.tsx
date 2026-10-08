@@ -2,6 +2,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BookOpenText,
+  CheckCircle,
   CalendarCheck,
   ChatCircleText,
   FlowArrow,
@@ -16,8 +17,8 @@ import {
 import { Link } from '@tanstack/react-router'
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { activities, audiences, bootcamp, manifesto, photo, site, skills, steps, tools, type Tone } from '#/content'
-import { Cta, Reveal, easeOutExpo, spotlight } from '../motion'
+import { activities, audiences, bootcamp, manifesto, photo, pricing, site, skills, steps, tools, type Tone } from '#/content'
+import { Cta, CtaAnchor, Reveal, easeOutExpo, spotlight } from '../motion'
 
 export function ToolsStrip() {
   return (
@@ -353,6 +354,107 @@ export function Gallery() {
         ))}
       </ul>
     </section>
+  )
+}
+
+/** Two plans side by side: the individual card glows with drifting colour, teams get a quote. */
+export function Pricing() {
+  const team = activities.find((a) => a.slug === 'team-training')!
+  const { individual } = pricing
+  return (
+    <section id="pricing" className="mx-auto max-w-7xl scroll-mt-24 px-5 py-20 md:px-8 md:py-28">
+      <Reveal>
+        <h2 className="max-w-3xl text-display-lg">Simple pricing.</h2>
+        <p className="mt-5 max-w-xl text-lg text-ink-muted">One monthly price for individuals. Teams get sessions built around their work.</p>
+      </Reveal>
+      <div className="mt-12 grid gap-4 md:grid-cols-2">
+        <Reveal className="h-full">
+          <Plan
+            name="Individual"
+            tone="magenta"
+            featured
+            line={individual.line}
+            includes={individual.includes}
+            price={
+              <>
+                <p className="flex items-baseline gap-2">
+                  <span className="text-lg font-medium text-ink/70">{individual.currency}</span>
+                  <span className="font-display text-6xl font-semibold tracking-[-0.04em] tabular-nums">{individual.amount}</span>
+                </p>
+                <p className="mt-2 text-sm text-ink/70">{individual.unit}</p>
+              </>
+            }
+            cta={<Cta to="/join">Join the community</Cta>}
+          />
+        </Reveal>
+        <Reveal delay={0.1} className="h-full">
+          <Plan
+            name="Teams"
+            tone="orange"
+            line={pricing.teams.line}
+            includes={team.happens}
+            price={
+              <>
+                <p className="font-display text-6xl font-semibold tracking-[-0.04em]">Let’s talk</p>
+                <p className="mt-2 text-sm text-ink-muted">A quote shaped around your team.</p>
+              </>
+            }
+            cta={
+              <CtaAnchor variant="ghost" href={`mailto:${site.email}?subject=${encodeURIComponent(pricing.teams.emailSubject)}`}>
+                Contact sales
+              </CtaAnchor>
+            }
+          />
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+function Plan({
+  name,
+  tone,
+  featured = false,
+  line,
+  price,
+  includes,
+  cta,
+}: {
+  name: string
+  tone: Tone
+  featured?: boolean
+  line: string
+  price: React.ReactNode
+  includes: ReadonlyArray<string>
+  cta: React.ReactNode
+}) {
+  return (
+    <div className={`tone-${tone} h-full rounded-shell bg-white/[0.03] p-2 ring-1 ring-white/[0.08]`}>
+      <div
+        onPointerMove={spotlight}
+        className={`spotlight relative isolate flex h-full flex-col overflow-hidden rounded-card p-7 shadow-[inset_0_1px_1px_rgb(255_255_255/0.08)] md:p-9 ${featured ? 'atmosphere' : 'bg-surface-1'}`}
+      >
+        {featured && (
+          <>
+            <span className="blob blob-a opacity-60" />
+            <span className="blob blob-b opacity-50" />
+            <div className="absolute inset-0 -z-[1] bg-canvas/35" />
+          </>
+        )}
+        <h3 className="font-display text-2xl font-semibold tracking-[-0.02em]">{name}</h3>
+        <p className={`mt-2 ${featured ? 'text-ink/80' : 'text-ink-muted'}`}>{line}</p>
+        <div className="mt-8">{price}</div>
+        <ul className="mt-8 space-y-3.5">
+          {includes.map((item) => (
+            <li key={item} className="flex gap-3">
+              <CheckCircle size={22} weight="fill" className="shrink-0" style={{ color: 'var(--tone-a)' }} />
+              {item}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-auto pt-10">{cta}</div>
+      </div>
+    </div>
   )
 }
 

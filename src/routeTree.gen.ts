@@ -13,6 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as ActivitiesIndexRouteImport } from './routes/activities.index'
 import { Route as ActivitiesSlugRouteImport } from './routes/activities.$slug'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminSignupsDotcsvRouteImport } from './routes/admin.signups[.]csv'
+import { Route as AdminApiSignupsRouteImport } from './routes/admin.api.signups'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,39 +37,88 @@ const ActivitiesSlugRoute = ActivitiesSlugRouteImport.update({
   path: '/activities/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSignupsDotcsvRoute = AdminSignupsDotcsvRouteImport.update({
+  id: '/admin/signups.csv',
+  path: '/admin/signups.csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminApiSignupsRoute = AdminApiSignupsRouteImport.update({
+  id: '/admin/api/signups',
+  path: '/admin/api/signups',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/join': typeof JoinRoute
   '/activities/$slug': typeof ActivitiesSlugRoute
+  '/admin/signups.csv': typeof AdminSignupsDotcsvRoute
   '/activities/': typeof ActivitiesIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/api/signups': typeof AdminApiSignupsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/join': typeof JoinRoute
   '/activities/$slug': typeof ActivitiesSlugRoute
+  '/admin/signups.csv': typeof AdminSignupsDotcsvRoute
   '/activities': typeof ActivitiesIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/api/signups': typeof AdminApiSignupsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/join': typeof JoinRoute
   '/activities/$slug': typeof ActivitiesSlugRoute
+  '/admin/signups.csv': typeof AdminSignupsDotcsvRoute
   '/activities/': typeof ActivitiesIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/api/signups': typeof AdminApiSignupsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/join' | '/activities/$slug' | '/activities/'
+  fullPaths:
+    | '/'
+    | '/join'
+    | '/activities/$slug'
+    | '/admin/signups.csv'
+    | '/activities/'
+    | '/admin/'
+    | '/admin/api/signups'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/join' | '/activities/$slug' | '/activities'
-  id: '__root__' | '/' | '/join' | '/activities/$slug' | '/activities/'
+  to:
+    | '/'
+    | '/join'
+    | '/activities/$slug'
+    | '/admin/signups.csv'
+    | '/activities'
+    | '/admin'
+    | '/admin/api/signups'
+  id:
+    | '__root__'
+    | '/'
+    | '/join'
+    | '/activities/$slug'
+    | '/admin/signups.csv'
+    | '/activities/'
+    | '/admin/'
+    | '/admin/api/signups'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   JoinRoute: typeof JoinRoute
   ActivitiesSlugRoute: typeof ActivitiesSlugRoute
+  AdminSignupsDotcsvRoute: typeof AdminSignupsDotcsvRoute
   ActivitiesIndexRoute: typeof ActivitiesIndexRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminApiSignupsRoute: typeof AdminApiSignupsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +151,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActivitiesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/signups.csv': {
+      id: '/admin/signups.csv'
+      path: '/admin/signups.csv'
+      fullPath: '/admin/signups.csv'
+      preLoaderRoute: typeof AdminSignupsDotcsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/api/signups': {
+      id: '/admin/api/signups'
+      path: '/admin/api/signups'
+      fullPath: '/admin/api/signups'
+      preLoaderRoute: typeof AdminApiSignupsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -106,7 +179,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   JoinRoute: JoinRoute,
   ActivitiesSlugRoute: ActivitiesSlugRoute,
+  AdminSignupsDotcsvRoute: AdminSignupsDotcsvRoute,
   ActivitiesIndexRoute: ActivitiesIndexRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminApiSignupsRoute: AdminApiSignupsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
