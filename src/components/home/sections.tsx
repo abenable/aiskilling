@@ -136,7 +136,6 @@ const bento: Record<string, string> = {
   bootcamps: 'md:col-span-3',
   'team-training': 'md:col-span-3',
 }
-const withPhoto = new Set(['workshops', 'online', 'team-training'])
 const bentoOrder = ['workshops', 'meetups', 'online', 'bootcamps', 'team-training']
 
 export function Formats() {
@@ -153,27 +152,16 @@ export function Formats() {
               to="/activities/$slug"
               params={{ slug: a.slug }}
               onPointerMove={spotlight}
-              className={`spotlight tone-${a.tone} group relative isolate flex h-full flex-col justify-end overflow-hidden rounded-card p-6 ring-1 ring-white/[0.08] md:p-7 ${withPhoto.has(a.slug) ? '' : 'atmosphere'}`}
+              className={`spotlight tone-${a.tone} group relative isolate flex h-full flex-col justify-end overflow-hidden rounded-card p-6 ring-1 ring-white/[0.08] md:p-7`}
             >
-              {withPhoto.has(a.slug) ? (
-                <>
-                  <img
-                    {...photo(a.slug)}
-                    sizes={a.slug === 'workshops' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 50vw, 100vw'}
-                    alt=""
-                    loading="lazy"
-                    className="absolute inset-0 -z-10 size-full object-cover transition-transform duration-1000 ease-out-expo group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 -z-10 bg-linear-to-t from-canvas/95 via-canvas/40 to-canvas/0" />
-                </>
-              ) : (
-                <>
-                  <span className="blob blob-a" />
-                  <span className="blob blob-b" />
-                  <span className="blob blob-c" />
-                  <div className="absolute inset-0 -z-[1] bg-linear-to-t from-canvas/70 to-canvas/0" />
-                </>
-              )}
+              <img
+                {...photo(a.slug)}
+                sizes={a.slug === 'workshops' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 50vw, 100vw'}
+                alt=""
+                loading="lazy"
+                className="absolute inset-0 -z-10 size-full object-cover transition-transform duration-1000 ease-out-expo group-hover:scale-105"
+              />
+              <div className="absolute inset-0 -z-10 bg-linear-to-t from-canvas/95 via-canvas/40 to-canvas/0" />
               <span className="absolute top-5 right-5 grid size-10 place-items-center rounded-full bg-white/10 ring-1 ring-white/15 backdrop-blur-md transition-transform duration-500 ease-spring group-hover:rotate-45 group-hover:scale-110">
                 <ArrowUpRight size={16} weight="bold" />
               </span>
