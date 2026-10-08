@@ -1,5 +1,5 @@
 // All site copy lives here. Edit this file to change what the site says.
-// Photos: Pexels (pexels.com/license), self-hosted in /public/images. Sources are listed in the README.
+// Photos: our own bootcamp photos plus Pexels (pexels.com/license), self-hosted in /public/images. Sources are in the README.
 
 export const site = {
   name: 'AI Skilling',
@@ -155,6 +155,19 @@ export const activities = [
 export type Activity = (typeof activities)[number]
 export type ActivitySlug = Activity['slug']
 export const activitySlugs = activities.map((a) => a.slug) as [ActivitySlug, ...ActivitySlug[]]
+
+/** Real photos from our last bootcamp, shown on the home page. */
+export const bootcamp = {
+  when: 'August 2026',
+  photos: [
+    { name: 'bootcamp-cohort', alt: 'The bootcamp cohort holding their certificates' },
+    { name: 'bootcamp-pitch', alt: 'A team pitching their project in front of the screen' },
+    { name: 'bootcamp-talk', alt: 'Presenting to the room during the bootcamp' },
+    { name: 'bootcamp-teamwork', alt: 'Participants working together on laptops' },
+    { name: 'bootcamp-facilitator', alt: 'A facilitator guiding groups working at their laptops' },
+    { name: 'bootcamp-certificate', alt: 'A participant receiving their certificate' },
+  ],
+}
 
 export const prompts = [
   { who: 'Student', text: 'Turn my lecture notes into a 7-day revision plan with a short quiz each day.' },

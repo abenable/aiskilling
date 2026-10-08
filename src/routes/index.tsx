@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Hero } from '#/components/home/hero'
-import { Audiences, Closing, Formats, Journey, Manifesto, Skills, ToolsStrip } from '#/components/home/sections'
+import { Audiences, Closing, Formats, Gallery, Journey, Manifesto, Skills, ToolsStrip } from '#/components/home/sections'
 import { Upcoming } from '#/components/upcoming'
 import { seo, siteJsonLd } from '#/lib/seo'
 import { getUpcoming } from '#/server/functions'
@@ -23,6 +23,7 @@ function Home() {
       <Formats />
       <Skills />
       <Journey />
+      <Gallery />
       <Upcoming events={events} />
       <Closing />
     </>

@@ -16,7 +16,7 @@ import {
 import { Link } from '@tanstack/react-router'
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { activities, audiences, manifesto, photo, site, skills, steps, tools, type Tone } from '#/content'
+import { activities, audiences, bootcamp, manifesto, photo, site, skills, steps, tools, type Tone } from '#/content'
 import { Cta, Reveal, easeOutExpo, spotlight } from '../motion'
 
 export function ToolsStrip() {
@@ -324,6 +324,47 @@ function Step({ i, title, body, progress }: { i: number; title: string; body: st
         <p className="mt-3 max-w-md text-lg text-ink-muted">{body}</p>
       </Reveal>
     </li>
+  )
+}
+
+const galleryCells = ['col-span-2 md:col-span-4 md:row-span-2', 'md:col-span-2', 'md:col-span-2', 'md:col-span-2', 'md:col-span-2', 'col-span-2 md:col-span-2']
+
+/** Real photos from the last bootcamp: each one settles from a slight zoom as it scrolls in. */
+export function Gallery() {
+  return (
+    <section className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
+      <Reveal>
+        <h2 className="max-w-3xl text-display-lg">Inside our last bootcamp.</h2>
+        <p className="mt-5 max-w-xl text-lg text-ink-muted">
+          {bootcamp.when}: group work on laptops, team pitches, and certificates to finish.
+        </p>
+      </Reveal>
+      <ul className="mt-12 grid grid-cols-2 gap-3 md:auto-rows-[15rem] md:grid-cols-6">
+        {bootcamp.photos.map((p, i) => (
+          <motion.li
+            key={p.name}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.9, delay: (i % 3) * 0.08, ease: easeOutExpo }}
+            className={`relative aspect-[4/3] overflow-hidden rounded-card ring-1 ring-white/[0.08] md:aspect-auto ${galleryCells[i]}`}
+          >
+            <motion.img
+              {...photo(p.name)}
+              sizes={i === 0 ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 50vw'}
+              alt={p.alt}
+              loading="lazy"
+              initial={{ scale: 1.15 }}
+              whileInView={{ scale: 1 }}
+              whileHover={{ scale: 1.05, transition: { duration: 0.8, ease: easeOutExpo } }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.6, ease: easeOutExpo }}
+              className="size-full object-cover"
+            />
+          </motion.li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
