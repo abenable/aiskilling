@@ -3,6 +3,7 @@ import { Link, createFileRoute, type ErrorComponentProps } from '@tanstack/react
 import { motion } from 'motion/react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { easeOutExpo } from '#/components/motion'
+import { outreachStarters } from '#/lib/email-templates'
 import { adminSearch, groupName, interestNames, type AdminSearch, type Signup, type SignupSort } from '#/lib/signups'
 
 export const Route = createFileRoute('/admin/')({
@@ -138,6 +139,7 @@ function EmailComposer({ target, onClose }: { target: ComposeTarget | null; onCl
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
   const [sent, setSent] = useState(false)
+  const [starter, setStarter] = useState('')
 
   // Reset the draft whenever a new person is targeted.
   useEffect(() => {
@@ -146,6 +148,7 @@ function EmailComposer({ target, onClose }: { target: ComposeTarget | null; onCl
     setError('')
     setSent(false)
     setSending(false)
+    setStarter('')
   }, [target?.email])
 
   useEffect(() => {
@@ -207,6 +210,26 @@ function EmailComposer({ target, onClose }: { target: ComposeTarget | null; onCl
               </button>
             </div>
             <div className="mt-5 space-y-3">
+              <select
+                value={starter}
+                onChange={(e) => {
+                  setStarter(e.target.value)
+                  const s = outreachStarters.find((t) => t.label === e.target.value)
+                  if (s) {
+                    setSubject(s.subject)
+                    setBody(s.body.replaceAll('[Company]', target.name.split(' ')[0] ? target.name : '[Company]'))
+                  }
+                }}
+                className="w-full rounded-xl bg-white/[0.05] px-4 py-3 text-sm text-ink ring-1 ring-white/10 transition-[box-shadow] duration-300 focus:ring-white/25 focus:outline-none"
+                aria-label="Start from a proven outreach template"
+              >
+                <option value="">Start from scratch…</option>
+                {outreachStarters.map((t) => (
+                  <option key={t.label} value={t.label}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
               <input
                 type="text"
                 value={subject}
@@ -225,6 +248,9 @@ function EmailComposer({ target, onClose }: { target: ComposeTarget | null; onCl
                 required
                 className="w-full resize-y rounded-xl bg-white/[0.05] px-4 py-3 text-sm text-ink ring-1 ring-white/10 transition-[box-shadow] duration-300 placeholder:text-ink-muted/60 focus:ring-white/25 focus:outline-none"
               />
+              <p className="text-xs text-ink-muted">
+                Sent as plain text — best reply rates come from under 90 words, a personalised first line, and one question at the end.
+              </p>
             </div>
             {error && <p className="mt-3 text-sm text-danger">{error}</p>}
             <div className="mt-5 flex justify-end gap-2">
