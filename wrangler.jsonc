@@ -10,6 +10,7 @@
 		{ "pattern": "www.aiskilling.dev", "custom_domain": true }
 	],
 	"observability": { "enabled": true },
+	"keep_vars": true,
 	"upload_source_maps": true,
 	"d1_databases": [
 		{
