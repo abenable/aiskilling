@@ -1,7 +1,7 @@
-import { ArrowDown, ArrowUp, ArrowsDownUp, Check, Copy, DownloadSimple } from '@phosphor-icons/react'
+import { ArrowDown, ArrowUp, ArrowsDownUp, Check, Copy, DownloadSimple, EnvelopeSimple, PaperPlaneTilt, X } from '@phosphor-icons/react'
 import { Link, createFileRoute, type ErrorComponentProps } from '@tanstack/react-router'
 import { motion } from 'motion/react'
-import { useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { easeOutExpo } from '#/components/motion'
 import { adminSearch, groupName, interestNames, type AdminSearch, type Signup, type SignupSort } from '#/lib/signups'
 
@@ -40,6 +40,7 @@ const columns: { label: string; sort?: SignupSort }[] = [
 function AdminPage() {
   const rows = Route.useLoaderData()
   const search = Route.useSearch()
+  const [compose, setCompose] = useState<ComposeTarget | null>(null)
   return (
     <Shell count={rows.length} search={search} emails={rows.map((r) => r.email)}>
       {rows.length ? (
@@ -64,9 +65,20 @@ function AdminPage() {
                 <motion.tr key={r.id} layout transition={{ duration: 0.5, ease: easeOutExpo }} className="border-b border-white/[0.06] align-top last:border-0">
                   <td className="px-4 py-3.5 font-medium">{r.name}</td>
                   <td className="px-4 py-3.5">
-                    <a href={`mailto:${r.email}`} className="text-ink underline decoration-white/25 underline-offset-4 hover:decoration-white">
-                      {r.email}
-                    </a>
+                    <div className="flex items-center gap-2">
+                      <a href={`mailto:${r.email}`} className="text-ink underline decoration-white/25 underline-offset-4 hover:decoration-white">
+                        {r.email}
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => setCompose({ id: r.id, name: r.name, email: r.email })}
+                        aria-label={`Email ${r.name}`}
+                        title={`Email ${r.name}`}
+                        className="inline-flex shrink-0 items-center rounded-full bg-white/[0.07] p-1.5 ring-1 ring-white/10 transition-[background-color,scale] duration-300 ease-out-expo hover:bg-white/[0.12] active:scale-[0.94]"
+                      >
+                        <EnvelopeSimple size={13} weight="bold" />
+                      </button>
+                    </div>
                   </td>
                   <td className="px-4 py-3.5 text-ink-muted">{groupName(r.audience)}</td>
                   <td className="px-4 py-3.5 text-ink-muted">{interestNames(r.interests).join(', ')}</td>
@@ -83,6 +95,7 @@ function AdminPage() {
           <p className="mt-2 text-ink-muted">They’ll show up here as soon as someone joins through the website.</p>
         </div>
       )}
+      <EmailComposer target={compose} onClose={() => setCompose(null)} />
     </Shell>
   )
 }
@@ -113,6 +126,128 @@ function Shell({ count, search, emails = [], children }: { count?: number; searc
       </div>
       <div className="mt-10 rounded-shell bg-white/[0.03] p-2 ring-1 ring-white/[0.08]">{children}</div>
     </section>
+  )
+}
+
+/** Directed one-to-one email from the admin composer, sent via the EMAIL binding and logged in D1. */
+type ComposeTarget = { id: number; name: string; email: string }
+
+function EmailComposer({ target, onClose }: { target: ComposeTarget | null; onClose: () => void }) {
+  const [subject, setSubject] = useState('')
+  const [body, setBody] = useState('')
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
+  const [sent, setSent] = useState(false)
+
+  // Reset the draft whenever a new person is targeted.
+  useEffect(() => {
+    setSubject('')
+    setBody('')
+    setError('')
+    setSent(false)
+    setSending(false)
+  }, [target?.email])
+
+  useEffect(() => {
+    if (!target) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    addEventListener('keydown', onKey)
+    return () => removeEventListener('keydown', onKey)
+  }, [target, onClose])
+
+  if (!target) return null
+
+  async function send(e: FormEvent) {
+    e.preventDefault()
+    setSending(true)
+    setError('')
+    try {
+      const res = await fetch('/admin/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ signupId: target!.id, to: target!.email, subject, body }),
+      })
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as { error?: string } | null
+        throw new Error(data?.error ?? `Sending failed (error ${res.status}).`)
+      }
+      setSent(true)
+      setTimeout(onClose, 1500)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-5" role="dialog" aria-modal="true" aria-label={`Email ${target.name}`}>
+      <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 cursor-default bg-black/60 backdrop-blur-sm" />
+      <div className="relative w-full max-w-lg rounded-card bg-surface-1 p-6 shadow-2xl ring-1 ring-white/10">
+        {sent ? (
+          <div className="px-2 py-10 text-center">
+            <Check size={40} weight="bold" className="mx-auto text-success" />
+            <p className="mt-4 text-lg">Sent to {target.email}.</p>
+            <p className="mt-1 text-sm text-ink-muted">A record is kept in the sent_emails table.</p>
+          </div>
+        ) : (
+          <form onSubmit={send}>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-display-md">Email {target.name}</h2>
+                <p className="mt-1 text-sm text-ink-muted">From no-reply@aiskilling.dev, one person at a time.</p>
+              </div>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close"
+                className="rounded-full bg-white/[0.07] p-2 ring-1 ring-white/10 transition-colors duration-300 hover:bg-white/[0.12]"
+              >
+                <X size={14} weight="bold" />
+              </button>
+            </div>
+            <div className="mt-5 space-y-3">
+              <input
+                type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="Subject"
+                maxLength={200}
+                required
+                className="w-full rounded-xl bg-white/[0.05] px-4 py-3 text-sm text-ink ring-1 ring-white/10 transition-[box-shadow] duration-300 placeholder:text-ink-muted/60 focus:ring-white/25 focus:outline-none"
+              />
+              <textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder={`Hi ${target.name.split(' ')[0]}, …`}
+                rows={10}
+                maxLength={5000}
+                required
+                className="w-full resize-y rounded-xl bg-white/[0.05] px-4 py-3 text-sm text-ink ring-1 ring-white/10 transition-[box-shadow] duration-300 placeholder:text-ink-muted/60 focus:ring-white/25 focus:outline-none"
+              />
+            </div>
+            {error && <p className="mt-3 text-sm text-danger">{error}</p>}
+            <div className="mt-5 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-full bg-white/[0.07] px-5 py-2.5 text-sm font-medium ring-1 ring-white/10 transition-[background-color,scale] duration-300 ease-out-expo hover:bg-white/[0.12] active:scale-[0.96]"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={sending}
+                className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-canvas transition-[scale] duration-300 ease-out-expo active:scale-[0.96] disabled:opacity-50"
+              >
+                <PaperPlaneTilt size={16} weight="bold" />
+                <span aria-live="polite">{sending ? 'Sending…' : 'Send'}</span>
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
   )
 }
 

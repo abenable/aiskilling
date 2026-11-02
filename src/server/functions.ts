@@ -2,6 +2,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { getRequestHeader } from '@tanstack/react-start/server'
 import { joinInput, upcomingInput } from '#/lib/schemas'
+import { sendJoinConfirmation } from './email.server'
 import { allowJoin, saveSignup, upcomingEvents } from './db.server'
 
 export const getUpcoming = createServerFn({ method: 'GET' })
@@ -19,5 +20,7 @@ export const joinCommunity = createServerFn({ method: 'POST' })
       throw new Error('Too many attempts from your connection. Please wait a minute and try again.')
     }
     await saveSignup(data)
+    // Transactional confirmation (Cloudflare Email Sending); failures are logged, never surfaced.
+    await sendJoinConfirmation({ name: data.name, email: data.email })
     return { ok: true as const }
   })

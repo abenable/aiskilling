@@ -38,7 +38,6 @@ export async function saveSignup(s: JoinInput) {
 
 // Whitelisted ORDER BY clauses: the sort key is validated, never interpolated from raw input.
 const signupOrder: Record<SignupSort, string> = { joined: 'created_at', name: 'name COLLATE NOCASE', email: 'email', group: 'audience' }
-
 export async function listSignups({ sort, dir }: AdminSearch): Promise<Signup[]> {
   const { results } = await env.DB.prepare(
     `SELECT id, name, email, audience, interests, message, created_at AS createdAt, updated_at AS updatedAt
@@ -46,6 +45,13 @@ export async function listSignups({ sort, dir }: AdminSearch): Promise<Signup[]>
       ORDER BY ${signupOrder[sort]} ${dir === 'asc' ? 'ASC' : 'DESC'}, id DESC`,
   ).all<Signup>()
   return results
+}
+
+// One row per directed email sent from the admin composer, so outreach has a record.
+export async function logSentEmail(input: { signupId: number | null; to: string; subject: string; body: string }) {
+  await env.DB.prepare(`INSERT INTO sent_emails (signup_id, to_email, subject, body) VALUES (?1, ?2, ?3, ?4)`)
+    .bind(input.signupId, input.to, input.subject, input.body)
+    .run()
 }
 
 export async function allowJoin(ip: string) {
